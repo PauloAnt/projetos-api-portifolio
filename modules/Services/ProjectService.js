@@ -1,6 +1,7 @@
 import ProjectRepository from "../Repositories/ProjectRepository.js";
 import ProjectException from "../Exceptions/ProjectException.js"
 import status from "http-status";
+import ProjectDTO from "../entities/DTO/UserDTO.js";
 
 export default class ProjectService{
     constructor(){
@@ -58,7 +59,6 @@ export default class ProjectService{
     async insert(req){
         try{
             let project = req.body;
-            console.log(project.name);
 
             if(!project){
                 throw new ProjectException(status.INTERNAL_SERVER_ERROR, "Project format not valid.")
@@ -71,6 +71,8 @@ export default class ProjectService{
                     message: "Project already exists in database."
                 }
             }
+
+            project = new ProjectDTO(project.id, project.username, project.password, project.typeUser);
 
             project = await this.repository.insert(project);
             return {

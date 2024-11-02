@@ -4,27 +4,19 @@ import multer from "multer";
 import env from "dotenv";
 import ProjectRouter from "./modules/routes/ProjectRouter.js";
 import AuthRouter from "./modules/routes/AuthRouter.js";
-import createUserDataAdmin from "./modules/db/User/initialUser.js";
-import createProjectDataTest from "./modules/db/Project/initialProject.js";
-import setupAssociations from "./modules/db/setupAssociation.js";
-import { connectDB } from "./modules/config/dbConfig.js";
+import createProjectTest from "./modules/db/Project/initialProject.js";
 
 // Configurações
 env.config();
 const upload = multer({ storage: storage });
 const app = express();
+const PORT = process.env.PORT || 8080;
+
 app.use(express.json());
 
 // Rotas
 app.use(ProjectRouter);
 app.use(AuthRouter);
-
-// Database
-connectDB();
-setupAssociations();
-
-await createUserDataAdmin();
-await createProjectDataTest();
 
 
 app.get("/status", (req, res) => {
@@ -34,6 +26,8 @@ app.get("/status", (req, res) => {
     });
 });
 
-app.listen(process.env.PORT, () => {
-    console.log(`The server is running. http://localhost:${process.env.PORT}`);
+app.listen(PORT, () => {
+    console.log(`The server is running. http://localhost:${PORT}`);
 })
+
+export default app;
