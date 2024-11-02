@@ -1,0 +1,6 @@
+- Colocar para verificar se já existe.
+- Conseguir colocar a img.
+- Fazer interface para criar projetos.
+- Consumir API.
+- Subir API no Versel.
+- Terminar front-end portifólio.
