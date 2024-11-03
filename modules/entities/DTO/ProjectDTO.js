@@ -1,6 +1,6 @@
 export default class ProjectDTO {
-    constructor(id, name, description) {
-        this._id = id;
+    constructor(name, description) {
+        this._id = null
         this._name = name;
         this._description = description;
         this._created = new Date();

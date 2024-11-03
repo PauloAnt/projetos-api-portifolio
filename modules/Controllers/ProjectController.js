@@ -13,7 +13,7 @@ export default class ProjectController{
     }
 
     async findById(req, res){
-        let project = await this.service.findById(req.params);
+        let project = await this.service.findById(req);
 
         return res.status(project.status).json(project);
     }

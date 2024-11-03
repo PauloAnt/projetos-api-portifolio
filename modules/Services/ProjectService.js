@@ -1,7 +1,7 @@
 import ProjectRepository from "../Repositories/ProjectRepository.js";
 import ProjectException from "../Exceptions/ProjectException.js"
 import status from "http-status";
-import ProjectDTO from "../entities/DTO/UserDTO.js";
+import ProjectDTO from "../entities/DTO/ProjectDTO.js";
 
 export default class ProjectService{
     constructor(){
@@ -10,7 +10,8 @@ export default class ProjectService{
 
     async findById(req){
         try{
-            let project = this.repository.findById(req.params);
+            let project = await this.repository.findById(req.params.id);
+            this.#validateId(project.id);
 
             if (!project){
                 throw new ProjectException(status.INTERNAL_SERVER_ERROR, "Project ID not found.")
@@ -22,14 +23,14 @@ export default class ProjectService{
             };
 
         }catch(err){
-            throw new ProjectException(status.INTERNAL_SERVER_ERROR, "Error searcher Project ID.")
+            throw new ProjectException(status.INTERNAL_SERVER_ERROR, err.message)
         }
     }
 
     async findByName(req){
         try{    
             let user = await this.repository.findByName(req.params);
-            this.#validateName(user);
+            this.#validateName(user.username);
 
             
             return {
@@ -37,14 +38,20 @@ export default class ProjectService{
                 data: user
             };
         } catch(err){
-            throw new ProjectException(status.INTERNAL_SERVER_ERROR, "Invalid username.")
+            throw new ProjectException(status.INTERNAL_SERVER_ERROR, "Invalid name.")
         }
         
     }
 
-    async #validateName(user){
-        if (user === null){
-            throw new ProjectException(status.INTERNAL_SERVER_ERROR, "Invalid username.")
+    #validateName(name){
+        if (name === null){
+            throw new ProjectException(status.INTERNAL_SERVER_ERROR, "Invalid name.")
+        }
+    }
+
+    #validateId(id){
+        if (id === null){
+            throw new ProjectException(status.INTERNAL_SERVER_ERROR, "Invalid id.")
         }
     }
 
@@ -63,8 +70,9 @@ export default class ProjectService{
             if(!project){
                 throw new ProjectException(status.INTERNAL_SERVER_ERROR, "Project format not valid.")
             }
-            
+
             let existsProject = await this.repository.findByName(project.name);
+
             if(existsProject){
                 return {
                     status: status.CONFLICT,
@@ -72,16 +80,16 @@ export default class ProjectService{
                 }
             }
 
-            project = new ProjectDTO(project.id, project.username, project.password, project.typeUser);
+            let projectDto = new ProjectDTO(project.name, project.description);
 
-            project = await this.repository.insert(project);
+            project = await this.repository.insert(projectDto);
             return {
-                status: status.OK,
-                data: project
+                status: status.CREATED,
+                data: projectDto
             }
 
         }catch(err){
-            throw new ProjectException(status.INTERNAL_SERVER_ERROR, "Project error insert.")
+            throw new ProjectException(status.INTERNAL_SERVER_ERROR, err.message);
         }
     }
 

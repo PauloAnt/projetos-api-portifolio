@@ -18,6 +18,7 @@ export default class AuthService{
     async login(req){
         try{
             let user = await this.repository.findByEmail(req.body.email);
+            console.log(user);
 
             if (!user){
                 throw new AuthException(status.UNAUTHORIZED, "Invalid email.");
@@ -32,8 +33,7 @@ export default class AuthService{
             const authUser = {
                 id: user.id,
                 username: user.name,
-                email: user.email,
-                typeUser: user.typeUser
+                email: user.email
             }
 
             const token = jwt.sign(authUser, SECRET, {

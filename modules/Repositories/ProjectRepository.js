@@ -1,24 +1,36 @@
-import { db } from "../config/firebaseConfig.js"; // Certifique-se de inicializar o Firebase Admin no arquivo firebaseConfig.js
+import { db } from "../config/firebaseConfig.js";
 
 export default class ProjectRepository {
     async findById(id) {
-        const projectRef = db.collection("project").where("id", "==", id);
-        const projectSnapshot = await projectRef.get();
-        
-        return projectSnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-        }));
+
+        const projectRef = db.collection("project").doc(id);
+
+        const doc = await projectRef.get()
+
+        if (doc) {
+            return {
+                id: doc.id,
+                ...doc.data()
+            };
+        } else {
+            return null;
+        }
     }
 
     async findByName(name) {
         const projectRef = db.collection('project').where('name', '==', name);
         const projectSnapshot = await projectRef.get();
         
-        return projectSnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-        }));
+        const doc = projectSnapshot.docs[0]
+        if (!projectSnapshot.empty) {
+            const doc = projectSnapshot.docs[0];
+            return {
+                id: doc.id,
+                ...doc.data()
+            };
+        } else {
+            return null;
+        }
     }
 
     async findAll() {
@@ -30,21 +42,20 @@ export default class ProjectRepository {
         }));
     }
 
+
     async insert(projectDTO) {
         const project = {
-            id: projectDTO.id,
             name: projectDTO.name,
             description: projectDTO.description,
-            created: new Date()
-        }
+            created: new Date().toISOString()
+        };
 
         const projectDoc = await db.collection('project').add(project);
-        
-        return {
-            id: projectDoc.id,
-            ...projectDTO
-        };
+
+        return projectDoc; 
     }
+
+
 
     async delete(id) {
         await db.collection('project').doc(id).delete();
