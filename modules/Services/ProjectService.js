@@ -2,6 +2,7 @@ import ProjectRepository from "../Repositories/ProjectRepository.js";
 import ProjectException from "../Exceptions/ProjectException.js"
 import status from "http-status";
 import ProjectDTO from "../entities/DTO/ProjectDTO.js";
+import upload from "../config/cloudinaryConfig.js";
 
 export default class ProjectService{
     constructor(){
@@ -63,9 +64,17 @@ export default class ProjectService{
         }
     }
 
+    async uploadImg(req){
+        const file = req.file;
+        const uploadUrl = await upload(file);
+        return uploadUrl;
+
+    }
+
     async insert(req){
         try{
-            let project = req.body;
+            let project = req.body.data;
+            project = JSON.parse(project);
 
             if(!project){
                 throw new ProjectException(status.INTERNAL_SERVER_ERROR, "Project format not valid.")
@@ -80,9 +89,25 @@ export default class ProjectService{
                 }
             }
 
-            let projectDto = new ProjectDTO(project.name, project.description);
+
+            const imgUrl = await this.uploadImg(req);
+
+            if (!imgUrl){
+                let projectDto = new ProjectDTO(project.name, project.description, project.link, null);
+                project = await this.repository.insert(projectDto);
+
+                return {
+                    status: status.CREATED,
+                    data: projectDto
+                }
+            }
+
+            let projectDto = new ProjectDTO(project.name, project.description, project.link, imgUrl);
+
 
             project = await this.repository.insert(projectDto);
+
+
             return {
                 status: status.CREATED,
                 data: projectDto

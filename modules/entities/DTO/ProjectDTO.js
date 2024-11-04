@@ -1,17 +1,10 @@
 export default class ProjectDTO {
-    constructor(name, description) {
-        this._id = null
+    constructor(name, description, link, image) {
         this._name = name;
         this._description = description;
         this._created = new Date();
-    }
-
-    get id() {
-        return this._id;
-    }
-
-    set id(value) {
-        this._id = value;
+        this._link = link;
+        this._image = image;
     }
 
     get name() {
@@ -32,5 +25,21 @@ export default class ProjectDTO {
 
     get created() {
         return this._created;
+    }
+
+    get link() {
+        return this._link;
+    }
+
+    set link(value) {
+        this._link = value;
+    }
+    
+    get image() {
+        return this._image;
+    }
+
+    set image(value) {
+        this._image = value;
     }
 }

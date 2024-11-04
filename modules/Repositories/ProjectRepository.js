@@ -47,7 +47,9 @@ export default class ProjectRepository {
         const project = {
             name: projectDTO.name,
             description: projectDTO.description,
-            created: new Date().toISOString()
+            created: new Date().toISOString(),
+            link: projectDTO.link,
+            image: projectDTO.image
         };
 
         const projectDoc = await db.collection('project').add(project);
