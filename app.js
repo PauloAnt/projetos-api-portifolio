@@ -2,7 +2,7 @@ import express from "express";
 import env from "dotenv";
 import ProjectRouter from "./modules/routes/ProjectRouter.js";
 import AuthRouter from "./modules/routes/AuthRouter.js";
-import createProjectTest from "./modules/db/Project/initialProject.js";
+import cors from "cors";
 
 // Configurações
 env.config();
@@ -10,10 +10,12 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 app.use(express.json());
+app.use(cors())
 
 // Rotas
 app.use(ProjectRouter);
 app.use(AuthRouter);
+
 
 
 app.get("/status", (req, res) => {
