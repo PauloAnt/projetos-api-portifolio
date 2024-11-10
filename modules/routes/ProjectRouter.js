@@ -7,7 +7,7 @@ const router = new Router();
 let controller = new ProjectController();
 const upload = multer({ storage: multer.memoryStorage() });
 
-router.get("/api/project", checkedToken,(req, res) => controller.findAll(req, res));
+router.get("/api/project", (req, res) => controller.findAll(req, res));
 
 router.get("/api/project/:id", checkedToken, (req, res) => controller.findById(req, res));
 

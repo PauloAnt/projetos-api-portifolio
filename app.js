@@ -16,8 +16,6 @@ app.use(cors())
 app.use(ProjectRouter);
 app.use(AuthRouter);
 
-
-
 app.get("/status", (req, res) => {
     return res.status(200).json({
         status: 200,
