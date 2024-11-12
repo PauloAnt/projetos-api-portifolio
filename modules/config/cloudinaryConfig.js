@@ -11,6 +11,7 @@ cloudinary.config({
     
 export default async function upload(file) {
     return new Promise((resolve, reject) => {
+        const buffer = Buffer.from(file.buffer);
 
         const uploadStream = cloudinary.uploader.upload_stream(
             { folder: "api-project-imgs", resource_type: "auto" },
@@ -23,6 +24,6 @@ export default async function upload(file) {
             }
         );
 
-        uploadStream.end(file.buffer);
+        uploadStream.end(buffer);
     });
 }
